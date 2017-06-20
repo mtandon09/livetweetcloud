@@ -1,0 +1,512 @@
+ylab="Mouse Gene List",
+cexRow=1,
+cexCol=1.1,
+srtCol=45,
+density.info="none",
+keysize=1#,
+#           colsep=c(3,5),
+#           rowsep=c(6,12)
+)
+newRowOrder <- grep("up.*[^FDR]$",rownames(readresults))
+newRowOrder
+newRowOrder <- grep("up.*[^FDR]$",rownames(readresults),perl=TRUE)
+newRowOrder
+newRowOrder <- grep("up$",rownames(readresults),perl=TRUE)
+newRowOrder
+newRowOrder <- [grep("up$",rownames(readresults),perl=TRUE), grep("down$",rownames(readresults),perl=TRUE)]
+newRowOrder <- c(grep("up$",rownames(readresults),perl=TRUE), grep("down$",rownames(readresults),perl=TRUE))
+newRowOrder
+library(gplots)
+library(RColorBrewer)
+rm(list=ls())
+# upordown <- "up"
+# upordown <- "down"
+upordown <- "all"
+datacol <- 4
+pvalcol <-7
+mydir <- "~/\"Google Drive\"/\"Snyder Lab\"/GSEA/\"Final-3\"/"
+retVal <- system(paste("perl ",mydir,"collect-results.pl ",upordown," ",mydir,"output/ ",datacol," ",pvalcol,sep=""))
+stopifnot()
+if (retVal != 0) {
+#   print()
+stop("Perl command failed")
+}
+pvalsfile <- paste("~/Google Drive/Snyder Lab/GSEA/Final-3/results/compiled-results.",upordown,".pvals.txt",sep="")
+resultsfilename <- paste("compiled-results.",upordown,".txt",sep="")
+resultsfile <- paste("~/Google Drive/Snyder Lab/GSEA/Final-3/results/",resultsfilename,sep="")
+readresults <- read.table(resultsfile,header=TRUE,sep="\t",row.names=1,comment.char="#")
+readresults.pvals <- read.table(pvalsfile,header=TRUE,sep="\t",row.names=1,comment.char="#")
+## Row numbers:
+# [1] "Eff-vs-Mem-Down"   "Eff-vs-Mem-Up"     "Eff-vs-Naive-Down" "Eff-vs-Naive-Up"
+# [5] "Liver-specific"    "Mem-vs-Naive-Down" "Mem-vs-Naive-Up"   "TCR-Pathway"
+# Col numbers:
+# [1] "Eff.v.Mem"             "Eff.v.Naive_2010"      "Latent.v.Naive_2008"   "Mem.v.Naive_2010"
+# [5] "One_Year.v.Naive_2008" "Peak.v.Eff"            "Peak.v.Mem"            "Peak.v.Naive_2008"
+# newRowOrder <- c(4,7,13,2,9,11,3,6,12,1,8,10,14,5)
+# newColOrder <- c(2,4,8,3,5,1,6,7)
+# newRowOrder <- c(2,5,7,1,4,6,8,3)
+# newColOrder <- c(1,3,2,4,5)
+# newRowOrder <- c(2,5,7,1,4,6,8,3)
+# newColOrder <- c(1,3,4)
+# newRowOrder <- c(3,6,1,2,4,7,8,5)
+# newRowOrder <- grep("FDR",rownames(results))
+# newRowOrder <- grep("[^FDR]$",rownames(readresults))
+newRowOrder <- c(grep("up$",rownames(readresults),perl=TRUE), grep("down$",rownames(readresults),perl=TRUE))
+# newRowOrder <- 1:nrow(readresults)
+newColOrder <- 1:ncol(readresults)
+results <- readresults[newRowOrder,newColOrder]
+results.pvals <- readresults.pvals[newRowOrder,newColOrder]
+# celltext <- matrix(as.character(unlist(as.matrix(results.pvals))),nrow=nrow(results.pvals))
+celltext <- matrix(as.character(unlist(as.matrix(results))),nrow=nrow(results.pvals))
+# celltext[results.pvals <= 0.1] <- celltext[celltext <= 0.05]
+# celltext[results.pvals <= 0.05] <- paste(celltext[celltext <= 0.05],"*",sep="")
+celltext[results.pvals <= 0.05] <- "*"
+celltext[results.pvals > 0.05] <- ""
+celltext <- matrix(as.character(celltext),nrow=nrow(results.pvals))
+heatmap.2(as.matrix(results),scale="none",trace="none",
+#           dendrogram = "both", Colv = TRUE, Rowv = TRUE,
+dendrogram = "none", Colv = FALSE, Rowv = FALSE,
+symkey=TRUE,
+margins=c(10,14),
+cellnote=celltext,
+notecol='white',
+notecex = 1,
+#col=brewer.pal(10,"RdYlGn")
+col=colorRampPalette(brewer.pal(10,"RdBu"))(100),
+main=paste("GSEA Enrichment Scores \nfor Mouse Genes in Human Data",sep=""),
+xlab="Human Comparison",
+ylab="Mouse Gene List",
+cexRow=1,
+cexCol=1.1,
+srtCol=45,
+density.info="none",
+keysize=1#,
+#           colsep=c(3,5),
+#           rowsep=c(6,12)
+)
+library(gplots)
+library(RColorBrewer)
+rm(list=ls())
+# upordown <- "up"
+# upordown <- "down"
+upordown <- "all"
+datacol <- 4
+pvalcol <-7
+mydir <- "~/\"Google Drive\"/\"Snyder Lab\"/GSEA/\"Final-3\"/"
+retVal <- system(paste("perl ",mydir,"collect-results.pl ",upordown," ",mydir,"output/ ",datacol," ",pvalcol,sep=""))
+stopifnot()
+if (retVal != 0) {
+#   print()
+stop("Perl command failed")
+}
+pvalsfile <- paste("~/Google Drive/Snyder Lab/GSEA/Final-3/results/compiled-results.",upordown,".pvals.txt",sep="")
+resultsfilename <- paste("compiled-results.",upordown,".txt",sep="")
+resultsfile <- paste("~/Google Drive/Snyder Lab/GSEA/Final-3/results/",resultsfilename,sep="")
+readresults <- read.table(resultsfile,header=TRUE,sep="\t",row.names=1,comment.char="#")
+readresults.pvals <- read.table(pvalsfile,header=TRUE,sep="\t",row.names=1,comment.char="#")
+## Row numbers:
+# [1] "Eff-vs-Mem-Down"   "Eff-vs-Mem-Up"     "Eff-vs-Naive-Down" "Eff-vs-Naive-Up"
+# [5] "Liver-specific"    "Mem-vs-Naive-Down" "Mem-vs-Naive-Up"   "TCR-Pathway"
+# Col numbers:
+# [1] "Eff.v.Mem"             "Eff.v.Naive_2010"      "Latent.v.Naive_2008"   "Mem.v.Naive_2010"
+# [5] "One_Year.v.Naive_2008" "Peak.v.Eff"            "Peak.v.Mem"            "Peak.v.Naive_2008"
+# newRowOrder <- c(4,7,13,2,9,11,3,6,12,1,8,10,14,5)
+# newColOrder <- c(2,4,8,3,5,1,6,7)
+# newRowOrder <- c(2,5,7,1,4,6,8,3)
+# newColOrder <- c(1,3,2,4,5)
+# newRowOrder <- c(2,5,7,1,4,6,8,3)
+# newColOrder <- c(1,3,4)
+# newRowOrder <- c(3,6,1,2,4,7,8,5)
+# newRowOrder <- grep("FDR",rownames(results))
+newRowOrder <- c(grep("up_FDR$",rownames(readresults),perl=TRUE), grep("down_FDR$",rownames(readresults),perl=TRUE))
+# newRowOrder <- c(grep("up$",rownames(readresults),perl=TRUE), grep("down$",rownames(readresults),perl=TRUE))
+# newRowOrder <- 1:nrow(readresults)
+newColOrder <- 1:ncol(readresults)
+results <- readresults[newRowOrder,newColOrder]
+results.pvals <- readresults.pvals[newRowOrder,newColOrder]
+# celltext <- matrix(as.character(unlist(as.matrix(results.pvals))),nrow=nrow(results.pvals))
+celltext <- matrix(as.character(unlist(as.matrix(results))),nrow=nrow(results.pvals))
+# celltext[results.pvals <= 0.1] <- celltext[celltext <= 0.05]
+# celltext[results.pvals <= 0.05] <- paste(celltext[celltext <= 0.05],"*",sep="")
+celltext[results.pvals <= 0.05] <- "*"
+celltext[results.pvals > 0.05] <- ""
+celltext <- matrix(as.character(celltext),nrow=nrow(results.pvals))
+heatmap.2(as.matrix(results),scale="none",trace="none",
+#           dendrogram = "both", Colv = TRUE, Rowv = TRUE,
+dendrogram = "none", Colv = FALSE, Rowv = FALSE,
+symkey=TRUE,
+margins=c(10,14),
+cellnote=celltext,
+notecol='white',
+notecex = 1,
+#col=brewer.pal(10,"RdYlGn")
+col=colorRampPalette(brewer.pal(10,"RdBu"))(100),
+main=paste("GSEA Enrichment Scores \nfor Mouse Genes in Human Data",sep=""),
+xlab="Human Comparison",
+ylab="Mouse Gene List",
+cexRow=1,
+cexCol=1.1,
+srtCol=45,
+density.info="none",
+keysize=1#,
+#           colsep=c(3,5),
+#           rowsep=c(6,12)
+)
+View(readresults)
+View(results)
+install.packages(c("maps","maptools","sp")
++ )
+install.packages(c("maps","maptools","sp"))
+library(sp)
+library(maps)
+library(maptools)
+?map
+library(zipcode)
+summary(zipcode)
+data(zipcode)
+head(zipcode)
+View(zipcode)
+map("county")
+?spDists
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+?image
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+?saveGIF
+install.packages("animation")
+library(animation)
+?saveGIF
+?imageOutput
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+?gif
+?GIF
+?png
+??gif
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+?read.gif
+getwd()
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+View(tweets.df)
+myformat <- "%a %b %d %H:%M:%S +0000 %Y"
+tweets.df$created_at_DT <- strptime(tweets.df$created_at, myformat)
+startTime <- min(tweets.df$created_at_DT)
+stopTime <- max(tweets.df$created_at_DT)
+startTime
+stopTime - startTime
+captureLen <- stopTime - startTime
+diffs <- difftime(stopTime,startTime,units = "minutes")
+diffs <- difftime(stopTime,startTime,units = "mins")
+?nrow
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+startTime - stopTime
+thisVar <- difftime(as.POSIXct(startTime) - as.POSIXct(stopTime), units="mins")
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+View(tweets.df)
+2+2
+?strptime
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+this <- stopTime - startTime
+print(this)
+this <- as.character(stopTime - startTime)
+this <- as.character(difftime(stopTime,startTime,units="mins"))
+this <- ""
+this <- as.character(difftime(stopTime,startTime,units="mins"))
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+?mtext
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/RProjects/GetTwitterData_Shiny')
+library(shiny)
+?jscolorInput
+install.packages("ShinySky")
+install_github("ShinySky")
+library(devtools)
+install_github("ShinySky")
+install_github("ShinySky","AnalytixWare")
+require(shinysky)
+shinysky::run.shinysky.example()
+?run.shinysky.example()
+?run.shinysky.example(2)
+?run.shinysky.example("4_busyIndicator")
+rm(list=ls())
+?run.shinysky.example("4_busyIndicator")
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+?run.shinysky.example("4_busyIndicator")
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+?run.shinysky.example("")
+?run.shinysky.example()
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+?actionButton
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+input$busyBtn
+this <- input$busyBtn
+this <- input
+summary(tags)
+this <- summary(tags)
+sum(this)
+this <- summary(tags)
+this <- tags$div
+this <- tags$div(class="busy")
+this <- tags$div(class="busy")$attribs
+this <- tags$div(class="busy")
+this <- tags$div(class="busy")$children
+this <- tags$div(class="busy")
+this <- tags$div
+this <- tags$div(id="busyBtn")
+this <- tags$div(id="busyBtn")$attribs
+this <- session
+this <- input
+data(input)
+input
+names(input)
+this <0 names(input)
+this <- names(input)
+this <- names(input)
+this <- names(session)
+this <- session
+this <- summary(session)
+?Environment
+??environment
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+this <- tags$div(id="loadmessage")
+?div
+this <- div()
+this <- session.div(id="loadmessage")
+this <- session$div(id="loadmessage")
+this <- session.tags$div(id="loadmessage")
+this <- session.tags$div(id="loadmessage")
+this <- session(tags$div(id="loadmessage"))
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+shiny::runApp('Google Drive/GetTwitterData_Shiny')
+?reactiveBar
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+?runApp
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3',port=3838)
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3',port=383)
+shiny::runApp('/srv/shiny-server/ShinyD3',port=3838)
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3',3838)
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3',3838)
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3',port=3838)
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('/srv/shiny-server/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+tweetFileName <- "www/data/tweets.json"
+gsub("www/","",tweetFileName)
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+View(freqdata)
+Q
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+Q
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+names(freqdata)
+blah <- as.list(freqdata)
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+Q
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+Q
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+Q
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+Q
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+Q
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?validateCssUnit
+sprintf("width: %s; height: %s;")
+sprintf("width: %s; height: %s;",900,600)
+shiny::runApp('Google Drive/RProjects_Local/ShinyD3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?reactive
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?fluidRow
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?parseTweets
+?tryCatch
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?write.csv
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+View(mydata)
+write.csv(mydata,file=wordDataFile,quote=FALSE)
+wordDataFile
+write.csv(mydata,file=wordDataFile,quote=FALSE,row.names=FALSE)
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?reactive
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?Sys.sleep
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+install.packages("multicore")
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?defined
+?is.defined
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?exists
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?fork
+?parallel
+?actionButton
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+?parallel
+?parallel
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_3')
+install.packages(c("shiny","devtools","ROAuth","SnowballC","tm"))
+install.packages(c("streamR"))
+library(devtools)
+install_github("shinyapps")
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_6')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+getwd()
+setwd("~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8/www/data")
+read.csv("word.data.csv")
+ls()
+read.csv("word.data.default.csv")
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+names(tweets.df)
+View(tweets.df)
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+?textOutput
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+blah <- data.frame()
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')
+shiny::runApp('~/Google Drive/RProjects_Local/GetTwitterData_Shiny_8')

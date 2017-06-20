@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!--From: http://stackoverflow.com/questions/14793859/d3-js-cloud-from-external-csv-or-txt-file-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>D3 CSV</title>
+</head>
+<body>
+
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<!--<script src="../lib/d3/d3.js"></script>-->
+<script src="../d3.layout.cloud.js"></script>
+<script type="text/javascript">
+  
+var fill = d3.scale.category20();
+
+var cityData = [], 
+    width = 1200, 
+    height = 1200;
+    
+var mycloud = d3.layout.cloud()
+            .size([width, height])
+            .timeInterval(10)
+            .words(cityData)
+            .rotate(function() { return ~~(Math.random() * 2) * 90; })
+            .font("Impact")
+            .fontSize(function(d) { return d.size; })
+            .on("end", draw);
+            //.start();
+            
+
+//var interval = setInterval(function() {
+//    var value = Math.random() * 100;
+//    data.push({time: ++t, value: value});
+//    redraw();
+//}, 1000);
+//var interval = setInterval(function() {
+//  randomizeSize();
+//  mycloud.words(cityData);
+//}, 1000);
+
+d3.csv("us-cities.csv", function(data) {
+    // build the list of city names
+    data.forEach( function (d) {
+        cityData.push(d.place);
+    });
+    
+    mycloud.words(cityData.map(function(d) {
+        return {text: d, size: 10 + Math.random() * 90};
+    }))
+    .start();
+    
+    setInterval(function() {
+      randomizeSize();
+      mycloud.words(cityData);
+    }, 1000);
+    
+});
+
+//mycloud.start();
+
+
+function draw(words) {
+d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(150,150)")
+    .selectAll("text")
+    .data(words)
+    .enter().append("text")
+    .style("font-size", function(d) { return d.size + "px"; })
+    .style("font-family", "Impact")
+    .style("fill", function(d, i) { return fill(i); })
+    .attr("text-anchor", "middle")
+    .attr("transform", function(d) {
+        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+    })
+    .text(function(d) { return d.text; });
+}
+// this is from http://bl.ocks.org/mbostock/4061502
+function randomizeSize() {
+  console.log("Randomizing...");
+  cityData.forEach( function(entry) {
+    entry.size = 10 + Math.random() * 90
+    })
+}
+
+</script>
+</body>
+</html>
